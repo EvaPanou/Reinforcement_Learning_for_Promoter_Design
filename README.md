@@ -80,5 +80,5 @@ The exact versions are pinned in `requirements.txt`. They were taken from the wo
 
 1. Yang Z, Su B, Cao C, Wen JR. Regulatory DNA sequence design with reinforcement learning. In: *International Conference on Learning Representations*. 2025. arXiv:2503.07981. Code (MIT licence): https://github.com/yangzhao1230/TACO
 2. Paszke A, Gross S, Massa F, et al. PyTorch: an imperative style, high-performance deep learning library. In: Wallach H, Larochelle H, Beygelzimer A, d’Alché-Buc F, Fox E, Garnett R, eds. Advances in Neural Information Processing Systems 32. Curran Associates, Inc.; 2019:8024-8035.
-3. regLM paper *(possibly)*
-4. HyenaDNA paper *(possibly)*
+3. Lal A, Garfield D, Biancalani T, Eraslan G. Designing realistic regulatory DNA with autoregressive language models. *Genome Res*. 2024;34(9):1411-1420. doi:10.1101/gr.279142.124
+4. Nguyen E, Poli M, Faizi M, et al. HyenaDNA: long-range genomic sequence modeling at single nucleotide resolution. *Advances in Neural Information Processing Systems*. 2023;36. arXiv:2306.15794. Code: https://github.com/HazyResearch/hyena-dna
