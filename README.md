@@ -20,15 +20,15 @@ This project runs the published **TACO method**<sup>1</sup> on yeast promoters. 
 
 #### Google Drive directory structure
 
-Source code downloaded from the [TACO GitHub Repository](https://github.com/yangzhao1230/TACO):
-
 ```text
 Reinforcement_Learning_for_Promoter_Design_colab/
   taco_code/TACO-main.zip   TACO Source Code
-  model_files/              writer, scoring and oracle model files
+  model_files/              regLM Source Code
   data/                     starting sequences, reward files, yeast table
   results/                  outputs of each run
 ```
+-*TACO Source code downloaded from the [TACO GitHub Repository](https://github.com/yangzhao1230/TACO)*
+-*regLM Source Code downloaded from the [regLM record on Zenodo](zenodo.org/records/12668907)*
 
 ## Setup
 
