@@ -19,11 +19,16 @@ This project runs the published **TACO method**<sup>1</sup> on yeast promoters. 
 | `results/` | Result tables written by the notebook | Product of the Notebook |
 
 #### Google Drive directory structure
+
+Source code downloaded from the [TACO GitHub Repository](https://github.com/yangzhao1230/TACO):
+
+```text
 Reinforcement_Learning_for_Promoter_Design_colab/
-  taco_code/TACO-main.zip   ([Link to Source Repo](https://github.com/yangzhao1230/TACO))
+  taco_code/TACO-main.zip   TACO Source Code
   model_files/              writer, scoring and oracle model files
   data/                     starting sequences, reward files, yeast table
   results/                  outputs of each run
+```
 
 ## Setup
 
@@ -54,7 +59,7 @@ The heavy part runs on Google Colab, because the laptop has no graphics card fro
 |---|---|
 | Operating system | Windows 11 Pro, version 10.0.26300 (build 26300) |
 | Python | 3.12 |
-| Visual Studio Code | `<fill in, under Help, then About>` |
+| Visual Studio Code | 1.146 |
 | Environment creation | Made with the Command Palette command "Python: Create Environment" (Venv, named `.venv`), which gives the same result as step 1 above |
 | Date of setup | 2026-11-10 |
 
