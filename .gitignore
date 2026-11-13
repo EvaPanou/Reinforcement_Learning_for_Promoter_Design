@@ -1,0 +1,14 @@
+# downloaded by the notebook
+data/
+ 
+# saved models and training histories (large, rebuilt by the notebook)
+results/models/
+*.pt
+ 
+# output of the dry run with made-up data (numbers mean nothing)
+results_stand_in/
+ 
+# Python and Visual Studio Code files
+.venv/
+__pycache__/
+.ipynb_checkpoints/
