@@ -10,12 +10,20 @@ This project runs the published **TACO method**<sup>1</sup> on yeast promoters. 
 | Path | What it is | Source |
 |---|---|---|
 | `README.md` | Description, setup, notes and references | General Repo file |
-| `requirements.txt` | Package versions | Prerequisites for running the notebook |
 | `.gitignore` | Files that Git should not track | General Repo file |
 | `LICENSE` | MIT licence for the code of this repository | General Repo file |
-| `Yeast_promoter_analysis.ipynb` | The notebook (Part 1: setup on Colab) | - |
+| `00_requirements.txt` | Package versions | Prerequisites for running the notebook |
+| `00_requirements_taco.txt` | Package versions | Prerequisites for running the TACO env |
+| `01_Yeast_promoter_analysis.ipynb` | The notebook analysis (Part 1: setup on Colab) | - |
+| `02_Checker_Neural_Networks.ipynb` | The notebook analysis (Part 2: setup locally) | - |
 | `results/` | Result tables written by the notebook | Product of the Notebook |
-| Drive: `taco_code/TACO-main.zip` | The existing TACO code | [Link to Repo](https://github.com/yangzhao1230/TACO) |
+
+#### Google Drive directory structure
+Reinforcement_Learning_for_Promoter_Design_colab/
+  taco_code/TACO-main.zip   ([Link to Source Repo](https://github.com/yangzhao1230/TACO))
+  model_files/              writer, scoring and oracle model files
+  data/                     starting sequences, reward files, yeast table
+  results/                  outputs of each run
 
 ## Setup
 
