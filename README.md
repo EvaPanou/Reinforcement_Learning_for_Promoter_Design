@@ -27,8 +27,7 @@ Reinforcement_Learning_for_Promoter_Design_colab/
   data/                     starting sequences, reward files, yeast table
   results/                  outputs of each run
 ```
--*TACO Source code downloaded from the [TACO GitHub Repository](https://github.com/yangzhao1230/TACO)*
--*regLM Source Code downloaded from the [regLM record on Zenodo](zenodo.org/records/12668907)*
+*TACO Source code downloaded from the [TACO GitHub Repository](https://github.com/yangzhao1230/TACO)*, *regLM Source Code downloaded from the [regLM record on Zenodo](zenodo.org/records/12668907)*
 
 ## Setup
 
