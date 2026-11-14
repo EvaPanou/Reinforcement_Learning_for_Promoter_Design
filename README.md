@@ -52,6 +52,12 @@ The heavy part runs on Google Colab, because the laptop has no graphics card fro
 
 ## NEXT STEPS
 
+- Run the cell 11? with all 3 seeds
+
+- Run the group-count cell from my earlier message now. It needs no retraining and takes seconds. It tells us whether a split by groups is possible with this table at all. That is better to know before the other seeds arrive.
+
+- Decide whether the final notebook should keep both results, the random split and the grouped split. Both together would show how much the random split flatters the networks, which is a finding in itself. It doubles the training time of Step 11, though. If you want only the grouped split, the Step 14 check then shows the near-copy problem of the random split only in the text of the conclusions. I’d keep both if the time allows, but it is your call.
+
 ## Documentation and versions
 
 ### Environment used *[to be updated as I go]*
