@@ -12,8 +12,8 @@ This project runs the published **TACO method**<sup>1</sup> on yeast promoters. 
 | `README.md` | Description, setup, notes and references | General Repo file |
 | `.gitignore` | Files that Git should not track | General Repo file |
 | `LICENSE` | MIT licence for the code of this repository | General Repo file |
-| `00_requirements.txt` | Package versions | Prerequisites for running the notebook |
-| `00_requirements_taco.txt` | Package versions | Prerequisites for running the TACO env |
+| `00_requirements.txt` | Package versions | Dependencies for running the notebooks |
+| `00_requirements_taco.txt` | Package versions | Dependencies for running the TACO env |
 | `01_Yeast_promoter_analysis.ipynb` | The notebook analysis (Part 1: setup on Colab) | - |
 | `02_Checker_Neural_Networks.ipynb` | The notebook analysis (Part 2: setup locally) | - |
 | `results/` | Result tables written by the notebook | Product of the Notebook |
@@ -57,6 +57,7 @@ The heavy part runs on Google Colab, because the laptop has no graphics card fro
 | Item | Version or detail |
 |---|---|
 | Operating system | Windows 11 Pro, version 10.0.26300 (build 26300) |
+| Google Colab | x |
 | Python | 3.12 |
 | Visual Studio Code | 1.146 |
 | Environment creation | Made with the Command Palette command "Python: Create Environment" (Venv, named `.venv`), which gives the same result as step 1 above |
