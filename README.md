@@ -50,6 +50,8 @@ The heavy part runs on Google Colab, because the laptop has no graphics card fro
 - TACO's script `reinforce_mbo.sh` calls a file `debug.py` that is not in the zip. The real script is `reinforce_mbo.py`.
 - [to add later]
 
+## NEXT STEPS
+
 ## Documentation and versions
 
 ### Environment used *[to be updated as I go]*
