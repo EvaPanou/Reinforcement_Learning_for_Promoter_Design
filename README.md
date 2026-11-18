@@ -1,13 +1,13 @@
 # Yeast promoter design using Reinforcement Learning 
 #### *Using TACO and running on Google Colab*
 
-This project runs the published **TACO method**<sup>1</sup> on yeast promoters. [TACO](https://github.com/yangzhao1230/TACO) teaches a DNA-writing network to design new regulatory sequences by reinforcement learning, using a scoring model that predicts how active a sequence is. This current project of mine is a small personal attempt towards learning PyTorch<sup>2</sup> and is built around existing code. A separate *checker* network, trained here, is planned as an extra control.
+This project runs the published **TACO method**<sup>1</sup> on yeast promoters. [TACO](https://github.com/yangzhao1230/TACO) teaches a DNA-writing network to design new regulatory sequences by reinforcement learning, using a scoring model that predicts how active a sequence is. This current project of mine is a small personal attempt towards learning PyTorch<sup>2</sup> and is built around existing code. Two checker networks of my own, were used as an extra control. They turned out not to be reliable judges of new sequences (see Notebook 2).
 
 **Reinforcement learning** is a way of training in which a network tries something, receives a score (the reward), and shifts toward what scored well. In this project the *writer* writes a DNA sequence letter by letter, a frozen *judge* model scores it, and the writer is updated<sup>1</sup>.
 
 Two notebooks make up the project:
 
-`01_Yeast_promoter_analysis.ipyn` runs TACO on yeast promoters (task complex) with my own settings: writer = regLM yeast_reglm.ckpt, reward model = regLM paired, checker model = regLM separate, motif weight 0, 100 rounds with 256 sequences per round, seeds 0, 1 and 42. It needs a graphics card and runs on Google Colab.
+`01_Yeast_promoter_analysis.ipynb` runs TACO on yeast promoters (task complex) with my own settings: writer = regLM yeast_reglm.ckpt, reward model = regLM paired, checker model = regLM separate, motif weight 0, 100 rounds with 256 sequences per round, seeds 0, 1 and 42. It needs a graphics card and runs on Google Colab.
 `02_Checker_Neural_Networks.ipynb` trains two checker networks of my own (a convolutional network and a transformer) on native yeast promoters, and uses them to score the sequences that TACO designed. It needs no graphics card and also runs on Google Colab.
 
 ## Repository structure 
@@ -20,7 +20,7 @@ Two notebooks make up the project:
 | `00_requirements.txt` | Package versions | Dependencies for running the notebooks |
 | `00_requirements_taco.txt` | Package versions | Dependencies for running the TACO env |
 | `01_Yeast_promoter_analysis.ipynb` | The notebook analysis (Part 1: setup on Colab) | - |
-| `02_Checker_Neural_Networks.ipynb` | The notebook analysis (Part 2: setup locally) | - |
+| `02_Checker_Neural_Networks.ipynb` | The notebook analysis (Part 2: setup on Colab) | - |
 | `figures/` | Result plots and figures | Product of the Notebook |
 
 ## Data sources and results location
@@ -31,7 +31,7 @@ No data and no result files are stored in this repository. The native promoter t
 - The regLM Source Code downloaded from the [regLM archive on Zenodo](zenodo.org/records/12668907).
 - The HyenaDNA base model code was found in the [HyenaDNA Repository](https://github.com/HazyResearch/hyena-dna).
 
-The TACO result tables (about 3 megabytes per seed) and the trained checker networks stay in Google Drive, to save space, and either the link or the tables themselves will be added <here> shortly. Only a few small pictures, saved by the notebooks into the Drive folder results/figures, were copied by hand into `figures/` of this repository. The tables of numbers in this README are summaries copied from the notebook outputs.
+The TACO result tables (about 3 megabytes per seed) and the trained checker networks stay in Google Drive, to save space. Only a few small pictures, saved by the notebooks into the Drive folder results/figures, were copied by hand into `figures/` of this repository. The tables of numbers in this README are summaries copied from the notebook outputs.
 
 #### Google Drive directory structure
 
@@ -75,52 +75,58 @@ All three seeds rise in the same way, and the checker model follows the reward m
 Diversity (median number of positions at which two of the best 128 sequences differ) falls from about 59 at round 10 to about 54 at round 100. Novelty (median distance to the closest starting sequence) stays between 52 and 54.5 positions out of 80.
 Looking into the result file of seed 0: the best sequence of round 1 already differs from its closest starting sequence at 48 of 80 positions, that of round 50 at 53, and that of round 100 at 54. The designs do not start from the starting sequences and change them step by step. They are written by the writer, and the starting sequences only fill its memory at the start.
 
-
 #### **Notebook 2**: my own checker networks
 
-The 3929 native promoters were split at random (seed 0) into 3143 training, 392 validation and 394 test promoters. Always predicting the training mean gives a mean absolute error of 2.61 (validation) and 2.75 (test).
+**The data.** 3929 native promoters were kept, all different from each other. The expression values range from about 2 to about 16, and 554 promoters are weak (below 5.391858).
 
-Distribution of native expression values
+![Distribution of native expression values](figures/native_expression_histogram.png)
 
-Test split, three training seeds (0, 1, 42):
+**The table consists of groups of near-identical promoters.** If the 3929 promoters are connected whenever they differ at a limit number of positions or fewer (directly or through a chain), the table falls into exactly 200 groups at every limit from 2 to 30 positions. The largest group has 21 sequences, and no sequence is alone. At a limit of 40 positions, two groups merge (199 groups, the largest with 40 sequences). Promoters inside one group therefore differ at 2 positions or fewer, and promoters from different groups differ at more than 30 positions. This looks like a library built from 200 base sequences with about 20 variants each. That reading is not tested.
 
-Network (learnable numbers)	Mean absolute error	Pearson correlation	Spearman correlation
-Convolutional network (76353)	0.699 (standard deviation 0.029)	0.955	0.959
-Transformer (72449)	0.806 (standard deviation 0.012)	0.940	0.940
-Baseline: training mean	2.753	-	-
+**Why a random split is not used.** In a random split, every one of the 394 test promoters has a training promoter that differs at only 1 or 2 of the 80 positions. A network tested this way is tested on close variants of sequences it has already seen. The notebook therefore splits **by groups** (limit of 5 positions): whole groups go into training, validation or test, 160, 20 and 20 groups, with 3154, 372 and 403 promoters. For the grouped split, the nearest training promoter of a test promoter differs at a median of 48 positions (smallest 38, largest 51), and no test promoter has a training promoter within 20 positions.
 
-Training curves of both networks
+**What is the training mean?** The training mean is the simplest possible prediction: one single number, the same for every promoter. It is the mean of the measured expression values of all promoters in the training split (3154 promoters): all values are added up and the sum is divided by 3154. It is calculated once, from the training split only. The validation and test splits are never used for it, because they must stay unseen. It serves as the **baseline**, the bar that a network has to beat. Every test promoter receives the same prediction, the training mean, and the **mean absolute error** of the baseline is the mean distance between each measured test value and that one number. For example, if the training mean is 10 and a test promoter was measured at 7, that promoter contributes an error of 3. All errors are averaged over the 403 test promoters. A network with a larger error than this baseline predicts worse than a guess that ignores the sequence completely. The same training mean (together with the training standard deviation) is also used to standardise the expression values before training, so that the networks work with numbers around zero.
 
-Limit of these numbers. For every test promoter, a training promoter differs at only 1 or 2 of the 80 positions (1 position for 324 of 394 test promoters, 82.2 percent). The test numbers therefore describe close variants of sequences the networks have seen, not new sequences. A split by groups of related sequences has not been made yet.
+**Result: the networks do not predict the expression of promoters from new groups.** Always predicting the training mean gives a mean absolute error of 2.78 (validation) and 2.26 (test). Test split, three training seeds (0, 1, 42), mean and standard deviation:
 
-Checking TACO's designs (three TACO seeds, 76800 sequences). The weak starting sequences score about 4.6 with both networks. The table shows the mean predicted expression per round, with the smallest and largest value over the three TACO seeds in brackets:
+| Network (learnable numbers) | Mean absolute error | Pearson correlation | Spearman correlation |
+|---|---|---|---|
+| Convolutional network (76353) | 2.781 (0.172) | 0.204 (0.110) | 0.206 (0.073) |
+| Transformer (72449) | 2.964 (0.220) | -0.264 (0.011) | -0.297 (0.028) |
+| Baseline: training mean | 2.262 | - | - |
 
-Round	Convolutional network	Transformer
-1	9.78 (9.69 to 9.90)	10.80 (10.76 to 10.84)
-10	10.15 (10.11 to 10.23)	10.57 (10.49 to 10.66)
-30	11.04 (10.86 to 11.24)	10.92 (10.50 to 11.18)
-50	12.16 (12.04 to 12.34)	11.13 (10.89 to 11.32)
-70	13.12 (12.93 to 13.23)	11.10 (10.98 to 11.26)
-100	14.53 (14.43 to 14.65)	11.02 (10.95 to 11.09)
+Both networks have a larger error than the baseline on the test split. The transformer's correlation is negative for all three seeds. The training loss falls close to zero for both networks, but the validation error does not follow: it stays near 2.0 to 2.3 for the convolutional network (baseline 2.78) and rises to about 3.8 for the transformer.
 
-Mean predicted expression per TACO round, three seeds
+![Training curves of both networks](figures/checker_training_curves.png)
 
-Agreement with the score of TACO's own checker model (Spearman correlation with oracle_score), for each TACO seed (0, 1, 42):
+The test split holds only 20 groups, so these numbers depend on which groups landed there. A random split gave much better numbers because close variants of the test promoters were in training. With only about 160 distinct groups in training, the networks may simply have too little independent data to learn general rules. This is not tested here.
 
-Network	Over all rounds together	Inside single rounds
-Convolutional network	0.646, 0.632, 0.625	0.383, 0.386, 0.371
-Transformer	0.060, 0.054, 0.041	0.030, 0.041, 0.023
-Both of my networks agree with TACO that the designs lie far above the starting sequences (about 4.6 against 10 to 15).
-The convolutional network also sees a steady improvement over the rounds. The transformer sees a small rise in the first 50 rounds and then no change.
-The convolutional network's agreement over all rounds together (about 0.63) is larger than inside single rounds (about 0.38), so a part of it comes from both rising over the rounds. The transformer shows almost no agreement with TACO's checker model in either way. Why is not tested here.
-A mean prediction of 14.5 lies near the upper end of the native values, so these predictions may be extrapolations. They are not expression levels measured in a cell.
-In the printed examples, the starting sequences contain about 40 percent G and C, and the designed sequences about 66 to 79 percent. This was only counted by eye on eight printed sequences. A count over all designs is not done yet.
+**Checking TACO's designs (three TACO seeds, 76800 sequences).** The weak starting sequences score on average 5.62 with the convolutional network and 9.17 with the transformer (all of them have a measured expression below 5.39). The table shows the mean predicted expression per round, with the smallest and largest value over the three TACO seeds in brackets:
 
-## NEXT STEPS
+| Round | Convolutional network | Transformer |
+|---|---|---|
+| 1 | 10.96 (10.88 to 11.06) | 10.96 (10.93 to 11.00) |
+| 10 | 11.24 (11.22 to 11.25) | 11.02 (10.97 to 11.05) |
+| 30 | 12.20 (12.07 to 12.41) | 11.36 (11.27 to 11.45) |
+| 50 | 13.31 (13.17 to 13.50) | 11.75 (11.70 to 11.82) |
+| 70 | 14.23 (14.05 to 14.38) | 12.02 (11.99 to 12.06) |
+| 100 | 15.57 (15.46 to 15.75) | 12.38 (12.35 to 12.43) |
 
-- Notebook 2: split the native promoters into training, validation and test sets by groups of related sequences, so that no test promoter has a near-copy in the training set, and compare with the random split.
-- Notebook 2: measure how far the designed sequences lie from the training sequences, and count the letters of the designs (for example the share of G and C per round) to see what the writer changes.
-- Find out why the transformer does not follow the rise that the convolutional network and TACO's two models see.
+![Mean predicted expression per TACO round, three seeds](figures/checker_scores_per_round.png)
+
+Agreement with the score of TACO's own checker model (Spearman correlation with `oracle_score`), for each TACO seed (0, 1, 42):
+
+| Network | Over all rounds together | Inside single rounds |
+|---|---|---|
+| Convolutional network | 0.663, 0.645, 0.641 | 0.400, 0.399, 0.385 |
+| Transformer | 0.654, 0.637, 0.632 | 0.393, 0.396, 0.376 |
+
+- Both networks predict a steady rise over the rounds, and both agree to a similar degree with TACO's checker model, inside single rounds (about 0.39) as well as over all rounds together (about 0.64).
+- Because neither network predicts the expression of promoters from new groups, this agreement is hard to interpret. It may come from something simple in the sequences that both TACO's checker model and my networks react to. This is not tested here.
+- In the printed examples, the starting sequences contain about 40 percent G and C, and the designed sequences about 66 to 79 percent. This was only counted by eye on eight printed sequences. A count over all designs is not done yet.
+- A predicted mean of 15.6 lies at the upper end of the native values, so these predictions are extrapolations. They are not expression levels measured in a cell.
+
+**Conclusion for this project.** The independent check of TACO's designs is therefore TACO's own checker model (`oracle_score`), which rises together with the reward model in all three seeds (notebook 1). My own networks are a learning exercise, and the finding of notebook 2 is the limit of what can be learned from this table when related promoters are kept apart.
 
 ## Documentation and versions
 
@@ -137,7 +143,7 @@ In the printed examples, the starting sequences contain about 40 percent G and C
 
 ### Package versions *[to be updated as I go]*
 
-The exact versions are pinned in `requirements.txt`. They were taken from the working environment after the first successful run:
+The exact versions are pinned in `00_requirements.txt` & `00_requirements_taco.txt`. They were taken from the working environment after the first successful run:
 
 | Package | Colab Version | taco_env |
 |---|---|
